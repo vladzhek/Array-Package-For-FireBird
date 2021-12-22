@@ -1,5 +1,5 @@
-# Array(Matrix)-Package-For-FireBird
-# Matrix SQL
+# Array-Package-For-FireBird
+# Matrix \ Array in SQL
 /***********************************************************************************/
 array.Reset(i,j)" - Устанавливает диапазон массива [i,j]                           *
   Возвращает Массив VARCHAR (по возможности заменить на тип BLOB)                  *
