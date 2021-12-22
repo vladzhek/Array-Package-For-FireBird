@@ -22,14 +22,14 @@ begin
 --------  <BODY>  --------------------------------------------------------------
 
 /*******************************************************************/
---"Reset" - Óñòàíàâëèâàåò äèàïàçîí ìàññèâà [i,j]                   *
-----Âîçâðàùàåò Ìàññèâ VARCHAR(5000)                                         *
---"SetUp" - Çàïèñûâàå çíà÷åíèå â óêàçàííóþ ÿ÷åéêó [i,j]            *
-----Âîçâðàùàåò Ìàññèâ VARCHAR(5000)                                         *
---"GetIt" - Îòïðàâëÿåò çíà÷åíèå ÿ÷åéêè ïî ïîëó÷åíîìó êëþ÷ó [i,j]   *
-----Âîçâðàùàåò Çíà÷åíèå VARCHAR(5000)                                      *
-----ViewCurArr - ïðèíèìàåò ìàññèâ è Âîçâðàùàåò îáðàáîòàíûé ìàñèâ   *
---               ãðóáî ãîâîðÿ êðàñèâûé âèä                         *
+--"Reset" - Устанавливает диапазон массива [i,j]                   *
+----Возвращает Массив VCBL                                         *
+--"SetUp" - Записывае значение в указанную ячейку [i,j]            *
+----Возвращает Массив VCBL                                         *
+--"GetIt" - Отправляет значение ячейки по полученому ключу [i,j]   *
+----Возвращает Значение Float                                      *
+----ViewCurArr - принимает массив и Возвращает обработаный масив   *
+--               грубо говоря красивый вид                         *
 /*******************************************************************/
 
 function Reset(
@@ -41,7 +41,7 @@ declare variable i INTEGER;
 declare variable j INTEGER;
 declare variable TempArr VARCHAR(5000);
 BEGIN
-    --========== ÎÁÍÓËÅÍÈÅ ============================    
+    --========== ОБнуление ============================    
     :GET_I = coalesce(:GET_I,1);
     :GET_J = coalesce(:GET_J,1);
     :i = 0;
@@ -49,7 +49,7 @@ BEGIN
     :TempArr = '|';
     --=================================================
     
-    --Ñîçäàíèÿ ìàññèâà[] íóëåé
+    --Создания массива[] нулей
     -- i
     while(:i <= GET_I) do
     begin
@@ -63,12 +63,12 @@ BEGIN
     
         if(:i <> GET_I) then
         begin
-            :TempArr = :TempArr||'*';--|| ascii_char(13)||'|';
+            :TempArr = :TempArr||'*';
         end
         :i = :i + 1;
         :j = 1;
     end-- for i
-    --ÂÎçðàùàþ ìàññèâ
+    --Возращаю массив
 
     return TempArr;
 END--reset
@@ -92,7 +92,7 @@ declare variable thisCell INTEGER;
 declare variable PrefCell INTEGER;
 
 BEGIN
-     --=========== Îáíóëåíèå ====================
+     --=========== Обновление ====================
     :TempArr = '';
     :i = 1;
     :j = 1;
@@ -106,7 +106,7 @@ BEGIN
 
     while (:search <> '1') do
     BEGIN
-        --Ïîèñê íà÷àëüíûé ïîðÿäêîâûé íîìåðñèìâîëà i
+        --Поиск начальный порядковый номерсимвола i
         while(:i < Get_i) do
         begin
             :i = :i + 1;
@@ -163,7 +163,7 @@ declare variable Counter INTEGER;
 declare variable PrefCount INTEGER;
 BEGIN
 
-    --=========== Îáíóëåíèå ====================
+    --=========== Обнуление ====================
     :TempArr = '';
     :Temp_1 = '';
     :Temp_Next = '';
@@ -261,7 +261,7 @@ declare variable j INTEGER;
 declare variable Counter INTEGER;
 declare variable PrefCount INTEGER;
 BEGIN
-     --=========== Îáíóëåíèå ====================
+     --=========== ОБнуление ====================
     :TempArr = '';
     :i = 1;
     :j = 1;
@@ -289,7 +289,7 @@ BEGIN
             :Counter = :Counter + 1;
             :TempArr = :TempArr||'*';
         end
-        --Ïåðåçàïèñü ìàññèâà ñ èçìåí¸íûì çíà÷åíèå
+        --Перезапись массива с изменёным значение
         if(:i <> GET_I or :j <> GET_J) then
             :TempArr = :TempArr||Right(LEFT(:arr,:Counter),1);
 
@@ -328,7 +328,7 @@ begin
 
     while (:search <> '1') do
     BEGIN
-        --Ïîèñê íà÷àëüíûé ïîðÿäêîâûé íîìåðñèìâîëà i
+        --Поиск начальный порядковый номерсимвола i
         :PrefCount = :Counter+1;
         :Counter = Position('*', :arr, :Counter+1);
         :thisCell = :Counter+1;
