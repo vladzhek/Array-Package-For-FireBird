@@ -207,7 +207,7 @@ BEGIN
                 :i = :i + 1;
                 :PrefCount = :Counter+1;
                 :Counter = Position('*', :arr, :Counter+1);
-                :Counter = :Counter + 1;
+                --:Counter = :Counter + 1;
             end
             else
             begin
