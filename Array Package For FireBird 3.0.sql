@@ -126,7 +126,7 @@ BEGIN
         :thisCell = Position('|', :arr, :PrefCell+1);
         if(:i = GET_I and :j = GET_J) then
         begin
-            :TempArr = :TempArr||'|'||:SetValue||'|';
+            :TempArr = :TempArr||iif(:Get_j <> 1,'|','')||:SetValue||'|';
             if(thisCell <> 0) then
                 :TempArr = :TempArr ||right(:arr, char_length(:arr)-thisCell);
             :search = '1';
