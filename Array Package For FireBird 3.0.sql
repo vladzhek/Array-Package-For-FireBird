@@ -8,6 +8,8 @@ begin
     function GetIt(Arr VARCHAR(5000), Get_I Float, Get_J Float) returns VARCHAR(5000);
     function SetUpOld(Arr VARCHAR(5000), Get_I Float, Get_J Float, SetValue VARCHAR(50)) returns VARCHAR(5000);
     function ViewCurArr(Arr VARCHAR(5000)) returns VARCHAR(5000);
+    function Count_I(Arr vcbl) returns integer;
+    function Count_J(Arr vcbl) returns integer;    
 end^
 
 SET TERM ; ^
@@ -23,11 +25,11 @@ begin
 
 /*******************************************************************/
 --"Reset" - Устанавливает диапазон массива [i,j]                   *
-----Возвращает Массив VCBL                                         *
+----Возвращает Массив VARCHAR(5000)                                         *
 --"SetUp" - Записывае значение в указанную ячейку [i,j]            *
-----Возвращает Массив VCBL                                         *
+----Возвращает Массив VARCHAR(5000)                                         *
 --"GetIt" - Отправляет значение ячейки по полученому ключу [i,j]   *
-----Возвращает Значение Float                                      *
+----Возвращает Значение VARCHAR(5000)                                      *
 ----ViewCurArr - принимает массив и Возвращает обработаный масив   *
 --               грубо говоря красивый вид                         *
 /*******************************************************************/
@@ -41,7 +43,7 @@ declare variable i INTEGER;
 declare variable j INTEGER;
 declare variable TempArr VARCHAR(5000);
 BEGIN
-    --========== ОБнуление ============================    
+    --========== ОБНУЛЕНИЕ ============================    
     :GET_I = coalesce(:GET_I,1);
     :GET_J = coalesce(:GET_J,1);
     :i = 1;
@@ -63,12 +65,12 @@ BEGIN
     
         if(:i <> GET_I) then
         begin
-            :TempArr = :TempArr||'*';
+            :TempArr = :TempArr||'*';--|| ascii_char(13)||'|';
         end
         :i = :i + 1;
         :j = 1;
     end-- for i
-    --Возращаю массив
+    --ВОзращаю массив
 
     return TempArr;
 END--reset
@@ -92,7 +94,7 @@ declare variable thisCell INTEGER;
 declare variable PrefCell INTEGER;
 
 BEGIN
-     --=========== Обновление ====================
+     --=========== Обнуление ====================
     :TempArr = '';
     :i = 1;
     :j = 1;
@@ -126,7 +128,7 @@ BEGIN
         :thisCell = Position('|', :arr, :PrefCell+1);
         if(:i = GET_I and :j = GET_J) then
         begin
-            :TempArr = :TempArr||iif(:Get_j <> 1,'|','')||:SetValue||'|';
+            :TempArr = :TempArr||'|'||:SetValue||'|';
             if(thisCell <> 0) then
                 :TempArr = :TempArr ||right(:arr, char_length(:arr)-thisCell);
             :search = '1';
@@ -207,7 +209,7 @@ BEGIN
                 :i = :i + 1;
                 :PrefCount = :Counter+1;
                 :Counter = Position('*', :arr, :Counter+1);
-                --:Counter = :Counter + 1;
+                :Counter = :Counter + 1;
             end
             else
             begin
@@ -261,7 +263,7 @@ declare variable j INTEGER;
 declare variable Counter INTEGER;
 declare variable PrefCount INTEGER;
 BEGIN
-     --=========== ОБнуление ====================
+     --=========== Обнуление ====================
     :TempArr = '';
     :i = 1;
     :j = 1;
@@ -345,6 +347,70 @@ begin
      end
     return :TempArr;
 END --ViewCurrArray
+
+function Count_I(
+    Arr VCBL )
+returns integer
+AS
+declare variable search varchar(10);
+declare variable i integer;
+declare variable Counter integer;
+begin
+    :search = '0';
+    :Counter = 0;:i = 0;
+
+    while (:search <> '1') do
+    BEGIN
+        --Поиск начальный порядковый номерсимвола i
+        :Counter = Position('*', :arr, :Counter+1);
+        :i = :i + 1;
+        if(Counter = 0) then
+        begin
+            :search = '1';
+        end
+    end
+
+    return :i;
+END --GetCountI
+
+function Count_J(
+    Arr VCBL )
+returns integer
+AS
+declare variable search varchar(10);
+declare variable i integer;
+declare variable CountJ integer;
+declare variable Counter integer;
+declare variable CountFirstLine integer;
+declare variable Cell VARCHAR(5000);
+begin
+    :search = '0';
+    :Counter = 0;CountJ = 0;CountFirstLine=0;
+    :i = 2;
+    :CountFirstLine = Position('*', :arr);
+    if(:CountFirstLine = 0) then
+    begin
+        :CountFirstLine = char_length(:arr);
+        :i = 1;
+    end
+    while (:search <> '1') do
+    BEGIN
+        :Cell = Right(left(:arr,:i),1);
+        --Поиск начальный порядковый номерсимвола i
+        :Counter = Position('*', :arr, :Counter+1);
+        if(:Cell = '|') then
+            :CountJ = :CountJ + 1;
+
+        if(:i >= :CountFirstLine) then
+        begin
+            :search = '1';
+        end
+
+        :i = :i + 1;
+    end
+
+    return :CountJ;
+END --GetCountJ
 
 ---  </BODY> ----------------------------------------------------------------------------
 end^
